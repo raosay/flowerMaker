@@ -20,6 +20,7 @@ export default defineConfig({
         'apple-touch-icon.png',
         'icons/*.png',
         'images/*.webp',
+        'images/vases/*.webp',
       ],
       manifest: {
         name: '一枝春 — 聊赠春意',
