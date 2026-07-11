@@ -9,7 +9,17 @@
 
 灵感来源：[flority.digital](https://flority.digital/) · [Alexandra A](https://www.instagram.com/alexandra.aurielle/)
 
-## 快速开始
+## 公网访问
+
+**https://raosay.github.io/flowerMaker/**
+
+由 GitHub Pages 托管（`gh-pages` 分支）。更新站点：
+
+```bash
+npm run deploy:pages
+```
+
+## 本地开发
 
 ```bash
 npm install
@@ -23,6 +33,7 @@ npm run preview
 
 ## 功能
 
-- 50 种花材，画布自由摆放
+- 50 种花材 + 7 款花瓶
+- 画布自由摆放（移动、缩放、旋转、图层）
 - 分享向导：花艺墙、致/来自、留言、PNG / 系统分享
 - 草稿自动保存、PWA 可安装
