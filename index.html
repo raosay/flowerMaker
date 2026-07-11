@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="一枝春" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="description" content="一枝春：在线花艺搭配。取陆凯「聊赠一枝春」诗意，把春色折成心意送给TA。" />
+  <meta property="og:title" content="一枝春 — 聊赠春意" />
+  <meta property="og:description" content="江南无所有，聊赠一枝春。挑选花材、自由摆放，把春意送给特别的人。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="icons/icon-512.png" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <title>一枝春 — 聊赠春意</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Space+Grotesk:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="preload" href="images/vases/vase_00.webp" as="image" />
+  <link rel="stylesheet" href="./css/styles.css" />
+  <link rel="stylesheet" href="./css/mobile-enhance.css" />
+<link rel="manifest" href="./manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="./registerSW.js"></script></head>
+<body>
+<header>
+  <div>
+    <div class="logo">一枝春</div>
+    <div class="tagline">聊赠春意</div>
+    <div class="made-by">取陆凯诗意 · 灵感源自 <a href="https://www.instagram.com/alexandra.aurielle/" target="_blank" rel="noopener">Alexandra A</a></div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-ghost" onclick="undo()">撤销</button>
+    <button class="btn btn-ghost" onclick="clearAll()">清空</button>
+    <button class="btn btn-ghost wall-desk-btn" onclick="openWall()">花艺墙</button>
+    <button class="btn btn-primary" onclick="openShare()"><span class="send-full">↗ 送给TA</span><span class="send-short">↗ 赠送</span></button>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- LEFT PALETTE -->
+  <div class="palette">
+    <span class="sheet-handle"></span>
+    <div class="panel-header">
+      <div class="panel-label">花材库</div>
+      <input class="search" type="text" placeholder="搜索花材…" id="si" oninput="filter()">
+    </div>
+    <div class="cats" id="cats">
+      <div class="cat on" data-c="all" onclick="setCat(this)">全部</div>
+      <div class="cat" data-c="orchid" onclick="setCat(this)">兰花</div>
+      <div class="cat" data-c="tropical" onclick="setCat(this)">热带花</div>
+      <div class="cat" data-c="lily" onclick="setCat(this)">百合</div>
+      <div class="cat" data-c="greenery" onclick="setCat(this)">绿叶</div>
+      <div class="cat" data-c="other" onclick="setCat(this)">其他</div>
+      <div class="cat" data-c="stem" onclick="setCat(this)">花茎</div>
+    </div>
+    <div class="flower-grid" id="fg"></div>
+  </div>
+
+  <!-- CANVAS -->
+  <div class="canvas-area">
+    <input type="hidden" id="arrName" value="">
+    <div class="canvas-wrap" id="cw">
+      <div id="stage"
+           ondragover="ov(event)"
+           ondragleave="ol(event)"
+           ondrop="od(event)">
+
+        <div class="empty-hint" id="eh">
+          <div class="hint-icon">🌸</div>
+          <div class="hint-text hint-text-desk">把花拖到画布上</div>
+          <div class="hint-sub hint-text-desk">或点击花材直接添加</div>
+          <div class="hint-text hint-text-mob">点下方「花材」开始添加</div>
+        </div>
+
+        <div id="pot">
+          <img id="potImg" src="images/vases/vase_00.webp" alt="花瓶" draggable="false">
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PROPS -->
+  <div class="props">
+    <span class="sheet-handle"></span>
+    <div class="panel-header">
+      <div class="panel-label">属性 <span class="badge" id="cnt">0</span></div>
+    </div>
+    <div class="props-body">
+
+      <div id="nosel" class="no-sel">选中一朵花<br>即可编辑属性</div>
+
+      <div id="selp" style="display:none">
+        <div class="pg">
+          <div class="pl">大小</div>
+          <div class="slider-row">
+            <input type="range" id="sz" min="40" max="220" value="100" oninput="setSz(this.value)">
+            <span class="pv" id="szv">100</span>
+          </div>
+        </div>
+        <div class="pg">
+          <div class="pl">旋转</div>
+          <div class="slider-row">
+            <input type="range" id="rot" min="-180" max="180" value="0" oninput="setRot(this.value)">
+            <span class="pv" id="rotv">0°</span>
+          </div>
+        </div>
+        <div class="pg">
+          <div class="pl">透明度</div>
+          <div class="slider-row">
+            <input type="range" id="op" min="10" max="100" value="100" oninput="setOp(this.value)">
+            <span class="pv" id="opv">100%</span>
+          </div>
+        </div>
+        <div class="pg">
+          <div class="pl">翻转</div>
+          <div class="flip-row">
+            <button class="fbtn on" id="fn" onclick="setFlip('none')">正常</button>
+            <button class="fbtn" id="fh" onclick="setFlip('h')">↔ 水平</button>
+            <button class="fbtn" id="fv" onclick="setFlip('v')">↕ 垂直</button>
+          </div>
+        </div>
+        <div class="pg">
+          <div class="pl">图层顺序</div>
+          <div class="layer-btns">
+            <button class="lbtn" onclick="bFwd()">▲ 上移</button>
+            <button class="lbtn" onclick="bBck()">▼ 下移</button>
+          </div>
+        </div>
+        <div class="pg">
+          <button onclick="delSel()" style="width:100%;padding:7px;background:#0e0e0e;border:1px solid #2a2a2a;border-radius:7px;color:#f55;font-family:inherit;font-size:0.72rem;font-weight:700;cursor:pointer;">删除花朵</button>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <div class="pg">
+        <div class="pl">背景</div>
+        <div class="bg-row" id="bgr">
+          <div class="bgsw on" style="background:#0a0a0a" data-bg="#0a0a0a" onclick="setBg(this)"></div>
+          <div class="bgsw" style="background:#3d0808" data-bg="#3d0808" onclick="setBg(this)"></div>
+          <div class="bgsw" style="background:#495FD7" data-bg="#495FD7" onclick="setBg(this)"></div>
+          <div class="bgsw" style="background:#f5f0e8" data-bg="#f5f0e8" onclick="setBg(this)"></div>
+        </div>
+      </div>
+
+      <div class="pg">
+        <div class="pl">花瓶 <span class="vase-name" id="vaseName">素瓷</span></div>
+        <div class="vase-row" id="vaseRow" aria-label="选择花瓶"></div>
+      </div>
+
+      <hr class="sep">
+
+      <div class="pl" style="margin-bottom:8px">图层 <span class="badge" id="lcnt">0</span></div>
+      <div class="layer-list" id="ll"></div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Mobile bottom tab bar -->
+<div class="mob-tabs" id="mobTabs">
+  <button class="mtab" data-tab="flowers" onclick="setTab('flowers')">
+    <span class="mtab-icon">🌸</span>花材
+  </button>
+  <button class="mtab" data-tab="edit" onclick="setTab('edit')">
+    <span class="mtab-icon">✏️</span>编辑
+  </button>
+  <button class="mtab" onclick="openWall()">
+    <span class="mtab-icon">🖼</span>花艺墙
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<!-- Share wizard -->
+<div class="swiz-bg" id="swizBg">
+  <div class="swiz-panel">
+    <div class="swiz-header">
+      <button class="swiz-back" id="swizBack" onclick="wizBack()" style="display:none">←</button>
+      <div class="swiz-title" id="swizTitle">送给TA</div>
+      <button class="swiz-close" onclick="closeWiz()">✕</button>
+    </div>
+    <div class="swiz-dots">
+      <span class="swiz-dot on" id="swizDot0"></span>
+      <span class="swiz-dot" id="swizDot1"></span>
+      <span class="swiz-dot" id="swizDot2"></span>
+      <span class="swiz-dot" id="swizDot3"></span>
+    </div>
+    <div class="swiz-body" id="swizBody">
+      <!-- Step 0: Submit to Wall -->
+      <div class="swiz-step" id="swizStep0">
+        <div class="wall-submit-prompt">
+          <img class="swiz-preview" id="swizPreviewWall" src="" alt="预览">
+          <p>喜欢这束花吗？</p>
+          <div class="sub">提交到花艺墙，让更多人看到你的作品</div>
+        </div>
+        <label class="swiz-label">你的名字</label>
+        <input class="swiz-input" type="text" id="swizWallName" placeholder="例如：小花" autocomplete="off">
+        <div class="swiz-step-btns">
+          <button class="swiz-btn swiz-btn-secondary" onclick="wizShowStep(1)">跳过</button>
+          <button class="swiz-btn swiz-btn-primary" id="wallSubmitBtn" onclick="wizSubmitToWall()">提交到花艺墙</button>
+        </div>
+      </div>
+      <!-- Step 1: To / From -->
+      <div class="swiz-step" id="swizStep1" style="display:none">
+        <label class="swiz-label">致</label>
+        <input class="swiz-input" type="text" id="swizTo" placeholder="收件人姓名" autocomplete="off">
+        <label class="swiz-label">来自</label>
+        <input class="swiz-input" type="text" id="swizFrom" placeholder="你的名字" autocomplete="off">
+        <div class="swiz-step-btns">
+          <button class="swiz-btn swiz-btn-secondary" onclick="wizSkipAll()">跳过</button>
+          <button class="swiz-btn swiz-btn-primary" onclick="wizNext()">下一步</button>
+        </div>
+      </div>
+      <!-- Step 2: Note (optional) -->
+      <div class="swiz-step" id="swizStep2" style="display:none">
+        <label class="swiz-label">想写一句留言吗？</label>
+        <textarea class="swiz-textarea" id="swizNote" placeholder="写一句短短的话…" maxlength="120"></textarea>
+        <div class="swiz-char"><span id="swizCharCnt">0</span>/120</div>
+        <div class="swiz-step-btns">
+          <button class="swiz-btn swiz-btn-secondary" onclick="wizSkipNote()">跳过</button>
+          <button class="swiz-btn swiz-btn-primary" onclick="wizNext()">下一步</button>
+        </div>
+      </div>
+      <!-- Step 3: Preview + Share -->
+      <div class="swiz-step" id="swizStep3" style="display:none">
+        <img class="swiz-preview" id="swizPreview" src="" alt="预览">
+        <!-- Desktop buttons -->
+        <div class="swiz-share-btns swiz-desktop-btns">
+          <button class="swiz-btn swiz-btn-primary" onclick="wizDownload()">下载 PNG</button>
+          <button class="swiz-btn swiz-btn-secondary" onclick="wizShare()">分享</button>
+          <button class="swiz-btn swiz-btn-wa" onclick="wizWhatsApp()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</button>
+        </div>
+        <!-- Mobile buttons -->
+        <div class="swiz-share-btns swiz-mobile-btns">
+          <button class="swiz-btn swiz-btn-primary" onclick="wizShare()">分享</button>
+          <button class="swiz-btn swiz-btn-secondary" onclick="wizSaveImage()">保存到相册</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Wall of Flowers gallery -->
+<div class="wall-bg" id="wallBg" onclick="if(event.target===this)closeWall()">
+  <div class="wall-panel">
+    <div class="wall-header">
+      <div class="wall-title">花艺墙</div>
+      <button class="wall-close" onclick="closeWall()">&#10005;</button>
+    </div>
+    <div class="wall-loading" id="wallLoading">正在加载作品…</div>
+    <div class="wall-empty" id="wallEmpty" style="display:none">还没有作品，来做第一束吧！</div>
+    <div class="wall-grid" id="wallGrid"></div>
+  </div>
+</div>
+
+<!-- Wall lightbox -->
+<div class="wall-lightbox" id="wallLightbox" onclick="if(event.target===this)closeWallLightbox()">
+  <button class="wall-lightbox-close" onclick="closeWallLightbox()">&#10005;</button>
+  <img id="wallLightboxImg" src="" alt="花艺作品">
+</div>
+
+<!-- Sheet dimmer (mobile) -->
+<div class="sheet-backdrop" id="sheetBackdrop" aria-hidden="true"></div>
+
+<!-- PWA install banner -->
+<div class="install-banner" id="installBanner" hidden>
+  <div class="install-copy">
+    <strong>安装「一枝春」</strong>
+    <span>加到主屏幕，随时折一枝春送人</span>
+  </div>
+  <div class="install-actions">
+    <button type="button" class="btn btn-ghost" id="installDismiss">暂不</button>
+    <button type="button" class="btn btn-primary" id="installBtn">安装</button>
+  </div>
+</div>
+
+<div class="offline-pill" id="offlinePill" hidden>离线中 · 草稿已自动保存</div>
+
+  <script src="./js/app.js"></script>
+  <script src="./js/enhance.js"></script>
+</body>
+</html>

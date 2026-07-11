@@ -1,0 +1,394 @@
+/* =========================================================
+   Mobile + PWA enhancements on top of Flority base styles
+   ========================================================= */
+
+/* Desktop: hide sheet handle + short send label */
+.sheet-handle { display: none; }
+.send-short { display: none; }
+.sheet-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 140;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+.sheet-backdrop.show {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Install banner */
+.install-banner {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: #121212;
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  animation: installIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.install-banner[hidden] { display: none !important; }
+.install-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.install-copy strong {
+  font-size: 0.82rem;
+  color: var(--cream);
+  font-weight: 700;
+}
+.install-copy span {
+  font-size: 0.68rem;
+  color: #777;
+  line-height: 1.35;
+}
+.install-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.install-actions .btn {
+  padding: 7px 12px;
+  font-size: 0.68rem;
+}
+@keyframes installIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.offline-pill {
+  position: fixed;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 260;
+  background: #1a1510;
+  color: var(--cream-dim);
+  border: 1px solid #3a3320;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  border-radius: 100px;
+  pointer-events: none;
+}
+.offline-pill[hidden] { display: none !important; }
+
+/* Range sliders: larger hit area on touch devices */
+@media (pointer: coarse) {
+  input[type="range"] {
+    height: 28px;
+    accent-color: var(--cream);
+  }
+  .fbtn, .lbtn {
+    min-height: 36px;
+    padding: 8px 12px;
+  }
+  .cat {
+    padding: 6px 12px;
+    font-size: 0.7rem;
+  }
+  .fi {
+    min-height: 96px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .fi:active {
+    transform: scale(0.96);
+    border-color: var(--cream);
+  }
+  .btn:active {
+    transform: scale(0.97);
+  }
+  .mtab:active {
+    transform: scale(0.96);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .fi, #pot, .install-banner {
+    animation: none !important;
+  }
+  .palette, .props, .sheet-backdrop, .toast {
+    transition: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Safe areas for notched phones / PWA standalone */
+  body {
+    height: 100dvh;
+    height: 100svh;
+    overscroll-behavior: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+  input, textarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  header {
+    padding-top: max(10px, env(safe-area-inset-top, 0px));
+    padding-left: max(14px, env(safe-area-inset-left, 0px));
+    padding-right: max(14px, env(safe-area-inset-right, 0px));
+  }
+
+  .send-full { display: none; }
+  .send-short { display: inline; }
+
+  /* Header: single compact row when possible */
+  header {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 10px;
+  }
+  .header-right {
+    margin-top: 0;
+    align-self: center;
+    margin-left: auto;
+  }
+  .logo { font-size: 26px; letter-spacing: -1px; }
+  .tagline { display: none; }
+  .made-by { display: none; }
+
+  /* Sheet backdrop active on mobile */
+  .sheet-backdrop.show {
+    display: block;
+  }
+
+  /* Bottom sheets with safe area + dynamic height */
+  .palette {
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    height: min(58dvh, 480px);
+    max-height: none;
+    padding-bottom: 8px;
+    will-change: transform;
+  }
+  .props {
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    height: min(48dvh, 380px);
+    max-height: none;
+    will-change: transform;
+  }
+  .props.open.props-tall {
+    height: min(62dvh, 520px);
+  }
+
+  .sheet-handle {
+    display: block;
+    width: 40px;
+    height: 5px;
+    background: #3a3a3a;
+    border-radius: 3px;
+    margin: 10px auto 6px;
+    flex-shrink: 0;
+    touch-action: none;
+  }
+
+  /* Tab bar: safe area + slightly taller touch */
+  .mob-tabs {
+    height: calc(56px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+  .mtab {
+    font-size: 0.6rem;
+    min-height: 48px;
+  }
+  .mtab-icon { font-size: 1.25rem; }
+
+  .toast {
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+    max-width: calc(100vw - 32px);
+    text-align: center;
+  }
+
+  /* Flower controls: easier thumbs */
+  .rh {
+    width: 22px;
+    height: 22px;
+    bottom: -8px;
+    right: -8px;
+    border-width: 2px;
+  }
+  .rot-handle {
+    width: 32px;
+    height: 32px;
+    bottom: -16px;
+    left: -16px;
+    font-size: 15px;
+    line-height: 30px;
+  }
+  .pf .ctrl {
+    top: -40px;
+    padding: 6px 10px;
+    gap: 6px;
+  }
+  .cbtn {
+    font-size: 0.9rem;
+    padding: 6px 8px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  /* Palette: sticky cats, smoother scroll */
+  .cats {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--grey);
+    padding-top: 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .cats::-webkit-scrollbar { display: none; }
+  .cat { flex-shrink: 0; }
+
+  .flower-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 10px 12px 18px;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  .fi img {
+    width: 72px;
+    height: 72px;
+  }
+  .fi-name {
+    font-size: 0.55rem;
+  }
+
+  /* Props: scrollable body, larger controls */
+  .props-body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding-bottom: 12px;
+  }
+  .slider-row input[type="range"] {
+    flex: 1;
+    min-height: 28px;
+  }
+  .bgsw {
+    width: 34px;
+    height: 34px;
+  }
+  .vase-row {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .vasesw {
+    min-height: 56px;
+    padding: 6px;
+  }
+
+  /* Share wizard: full-bleed bottom sheet feel */
+  .swiz-bg.show {
+    padding: 0;
+  }
+  .swiz-panel {
+    max-height: min(92dvh, 100%);
+    padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  }
+  .swiz-input,
+  .swiz-textarea {
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+  .swiz-btn {
+    min-height: 46px;
+    font-size: 0.85rem;
+  }
+  .swiz-share-btns {
+    gap: 10px;
+  }
+
+  /* Wall gallery */
+  .wall-bg {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .wall-panel {
+    max-height: 100dvh;
+    padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Canvas: allow vertical pan when stage is tall */
+  .canvas-wrap {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 8px 0 12px;
+  }
+
+  /* Dragging flower: elevate visually */
+  .pf.dragging-touch {
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.55));
+    z-index: 999 !important;
+  }
+}
+
+/* Standalone PWA: slightly tighter chrome */
+@media (display-mode: standalone) {
+  header {
+    padding-top: max(12px, env(safe-area-inset-top, 0px));
+  }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+  .logo { font-size: 22px; }
+  .btn { padding: 6px 10px; font-size: 0.68rem; }
+  .flower-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .fi img { width: 60px; height: 60px; }
+}
+
+/* Landscape phones: keep sheets shorter so canvas stays usable */
+@media (max-width: 900px) and (orientation: landscape) {
+  .palette {
+    height: min(70dvh, 100%);
+    max-width: 50vw;
+    left: auto;
+    right: 0;
+    bottom: 0;
+    border-radius: 18px 0 0 0;
+    top: env(safe-area-inset-top, 0px);
+  }
+  .props {
+    height: min(70dvh, 100%);
+    max-width: 50vw;
+    left: auto;
+    right: 0;
+    bottom: 0;
+    border-radius: 18px 0 0 0;
+    top: env(safe-area-inset-top, 0px);
+  }
+  .mob-tabs {
+    /* still show tabs but compact */
+  }
+}
