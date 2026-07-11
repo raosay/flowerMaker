@@ -1,0 +1,17 @@
+{
+  "name": "一枝春 — 聊赠春意",
+  "short_name": "一枝春",
+  "description": "取陆凯「聊赠一枝春」诗意。在线搭配花艺，把春色折成心意送给TA。",
+  "theme_color": "#0a0a0a",
+  "background_color": "#0a0a0a",
+  "display": "standalone",
+  "orientation": "any",
+  "start_url": "./",
+  "scope": "./",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

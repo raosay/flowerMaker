@@ -1,0 +1,16 @@
+{
+  "name": "flowermaker",
+  "private": true,
+  "version": "1.0.0",
+  "description": "一枝春 — 聊赠春意 · 在线花艺搭配 PWA",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5",
+    "vite-plugin-pwa": "^1.0.0"
+  }
+}

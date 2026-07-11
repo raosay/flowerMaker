@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.venv/
+.DS_Store
+*.log
+dev-dist/
+.vite/
+public/index.original.html
+.idea/
+.vscode/
+*.local
